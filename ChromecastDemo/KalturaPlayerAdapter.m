@@ -35,7 +35,7 @@
     self = [super init];
     if (self) {
         _renderingView = renderingView;
-        static NSString * const serverUrlString = @"http://cdnapi.kaltura.com/html5/html5lib/v2.46/mwEmbedFrame.php";
+        static NSString * const serverUrlString = @"http://kgit.html5video.org/tags/v2.47.rc15/mwEmbedFrame.php";
         static NSString * const uiConfigId = @"34339251";
         static NSString * const partnerId = @"2093031";
         KPPlayerConfig *config = config = [[KPPlayerConfig alloc] initWithServer:serverUrlString
@@ -46,18 +46,18 @@
         [config addConfigKey:@"fullScreenBtn.visible" withValue:@"false"];
         [config addConfigKey:@"chromecast.plugin" withValue:@"true"];
         [config addConfigKey:@"chromecast.useKalturaPlayer" withValue:@"true"];
-        [config addConfigKey:@"chromecast.applicationID" withValue:@"C43947A1"];
+        [config addConfigKey:@"chromecast.applicationID" withValue:@"48A28189"];
         [config addConfigKey:@"controlBarContainer.plugin" withValue:@"true"];
         [config addConfigKey:@"controlBarContainer.hover" withValue:@"true"];
         self.playerConfig = config;
         
         self.castProvider = [[KCastProvider alloc] init];
         self.castProvider.delegate = self;
-        [self.castProvider startScan:@"C43947A1"];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(applicationDidEnterBackgroundNotificationHandler)
-                                                     name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];
+        [self.castProvider startScan:@"48A28189"];
+//        [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                 selector:@selector(applicationDidEnterBackgroundNotificationHandler)
+//                                                     name:UIApplicationDidEnterBackgroundNotification
+//                                                   object:nil];
     }
     return self;
 }
@@ -66,11 +66,10 @@
 
 - (void)playVideoWithIdentifier:(NSString *)videoIdentifier {
     if (self.playerVC) {
-        if (self.isCasting) {
-            [self.castProvider disconnectFromDeviceWithLeave];
-
-            // self.shouldStartCasting = YES;
-        }
+//        if (self.isCasting) {
+//            [self.castProvider disconnectFromDevice];
+//            self.shouldStartCasting = YES;
+//        }
         self.playerConfig.entryId = videoIdentifier;
         [self.playerVC changeConfiguration:self.playerConfig];
         [self.playerVC changeMedia:videoIdentifier];
@@ -138,12 +137,12 @@
     NSLog(@"%@ >> kPlayer:playerLoadStateDidChange:. Player: %@\nState: %d", [self class], player, (int)state);
     
     if (state & KPMediaLoadStatePlayable) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //            if (self.shouldStartCasting) {
-            //                [self connectToDevice:self.castProvider.selectedDevice];
-            //                self.shouldStartCasting = NO;
-            //            }
-        });
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            if (self.shouldStartCasting) {
+//                [self connectToDevice:self.castProvider.selectedDevice];
+//                self.shouldStartCasting = NO;
+//            }
+//        });
     }
 }
 
@@ -305,8 +304,8 @@
     return chromecastBarButton;
 }
 
-- (void)applicationDidEnterBackgroundNotificationHandler {
-    [self stopCasting];
-}
+//- (void)applicationDidEnterBackgroundNotificationHandler {
+//    [self stopCasting];
+//}
 
 @end
