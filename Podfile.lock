@@ -5,20 +5,20 @@ PODS:
   - google-cast-sdk/Assets (2.10.4):
     - google-cast-sdk/Core
   - google-cast-sdk/Core (2.10.4)
-  - KalturaPlayerSDK (2.4.1):
-    - KalturaPlayerSDK/Core (= 2.4.1)
-    - KalturaPlayerSDK/Widevine (= 2.4.1)
-  - KalturaPlayerSDK/Core (2.4.1)
-  - KalturaPlayerSDK/Widevine (2.4.1)
+  - KalturaPlayerSDK (2.4.2):
+    - KalturaPlayerSDK/Core (= 2.4.2)
+    - KalturaPlayerSDK/Widevine (= 2.4.2)
+  - KalturaPlayerSDK/Core (2.4.2)
+  - KalturaPlayerSDK/Widevine (2.4.2)
 
 DEPENDENCIES:
   - google-cast-sdk (= 2.10.4)
-  - KalturaPlayerSDK (~> 2.4.1)
+  - KalturaPlayerSDK (~> 2.4.2)
 
 SPEC CHECKSUMS:
   google-cast-sdk: eb83ef6b875969e765011c457b254539c0978792
-  KalturaPlayerSDK: f4606564f7e3f40cf364869ceeacdddb1569f2d6
+  KalturaPlayerSDK: 96dc6fa9fbcf7b6d6cddd59a57d9ef0c4879ec62
 
-PODFILE CHECKSUM: a2a561a448243db19c54009fcb9b9597501eaa87
+PODFILE CHECKSUM: be5a4d88ed12893cdad70b2131c23ca4667633c1
 
 COCOAPODS: 1.0.1

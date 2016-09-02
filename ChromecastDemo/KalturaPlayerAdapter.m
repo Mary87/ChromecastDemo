@@ -35,14 +35,14 @@
     self = [super init];
     if (self) {
         _renderingView = renderingView;
-        static NSString * const serverUrlString = @"http://kgit.html5video.org/tags/v2.47.rc15/mwEmbedFrame.php";
+        static NSString * const serverUrlString = @"http://cdnapi.kaltura.com/html5/html5lib/v2.47/mwEmbedFrame.php";
         static NSString * const uiConfigId = @"34339251";
         static NSString * const partnerId = @"2093031";
         KPPlayerConfig *config = config = [[KPPlayerConfig alloc] initWithServer:serverUrlString
                                                                         uiConfID:uiConfigId
                                                                        partnerId:partnerId];
 
-        [config addConfigKey:@"autoPlay" withValue:@"true"];
+        [config addConfigKey:@"autoPlay" withValue:@"false"];
         [config addConfigKey:@"fullScreenBtn.visible" withValue:@"false"];
         [config addConfigKey:@"chromecast.plugin" withValue:@"true"];
         [config addConfigKey:@"chromecast.useKalturaPlayer" withValue:@"true"];
@@ -194,18 +194,18 @@
     [self changeChromecastBarButtonState:provider];
 }
 
-- (void)didDisconnectFromDevice:(KCastProvider *)provider {
-    NSLog(@"%@ >> didDisconnectFromDevice:.", self.class);
-    [self stopCasting];
+- (void)didDisconnectFromDevice:(KCastProvider *)provider withError:(NSError *)error{
+    NSLog(@"%@ >> didDisconnectFromDevice:withError. Error:%@", self.class, error.description);
+  //  [self stopCasting];
 }
 
 - (void)castProvider:(KCastProvider *)provider didFailToConnectToDevice:(NSError *)error {
-    NSLog(@"%@ >> castProvider:didFailToConnectToDevice:.", self.class);
+    NSLog(@"%@ >> castProvider:didFailToConnectToDevice:. Error:%@", self.class, error.description);
     [self changeChromecastBarButtonState:provider];
 }
 
 - (void)castProvider:(KCastProvider *)provider didFailToDisconnectFromDevice:(NSError *)error {
-    NSLog(@"%@ >> castProvider:didFailToDisconnectFromDevice:.", self.class);
+    NSLog(@"%@ >> castProvider:didFailToDisconnectFromDevice:.Error:%@", self.class, error.description);
     [self changeChromecastBarButtonState:provider];
 }
 
@@ -244,7 +244,7 @@
     if (devices && devices.count > 0) {
         for (KCastDevice *device in devices) {
             UIAlertAction *action = [UIAlertAction new];
-            if (self.castProvider.isConnected && [device.routerId isEqualToString:self.castProvider.selectedDevice.routerId]) {
+            if (self.castProvider.selectedDevice && [device.routerId isEqualToString:self.castProvider.selectedDevice.routerId]) {
                 action = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@ - Disconnect", device.routerName] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
                     [self disconnectFromDevice:device];
                 }];
@@ -284,7 +284,7 @@
 - (void)changeChromecastBarButtonState:(KCastProvider *)provider {
     ChromecastBarButtonItem *chromecastButton;
     if (provider.devices.count > 0) {
-        if (provider.isConnected) {
+        if (provider.selectedDevice) {
             chromecastButton = [self createChromecastBarButtonItemWithState:ChromecastBarButtonItemStateCastConnected];
         }
         else {
