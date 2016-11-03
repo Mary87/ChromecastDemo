@@ -1,24 +1,34 @@
 PODS:
-  - google-cast-sdk (2.10.4):
-    - google-cast-sdk/Assets (= 2.10.4)
-    - google-cast-sdk/Core (= 2.10.4)
-  - google-cast-sdk/Assets (2.10.4):
-    - google-cast-sdk/Core
-  - google-cast-sdk/Core (2.10.4)
-  - KalturaPlayerSDK (2.4.1):
-    - KalturaPlayerSDK/Core (= 2.4.1)
-    - KalturaPlayerSDK/Widevine (= 2.4.1)
-  - KalturaPlayerSDK/Core (2.4.1)
-  - KalturaPlayerSDK/Widevine (2.4.1)
+  - google-cast-sdk (3.2.0):
+    - google-cast-sdk/Core (= 3.2.0)
+  - google-cast-sdk/Core (3.2.0)
+  - KalturaPlayerSDK (2.6.0.rc3):
+    - KalturaPlayerSDK/Core (= 2.6.0.rc3)
+    - KalturaPlayerSDK/GoogleCast (= 2.6.0.rc3)
+    - KalturaPlayerSDK/Widevine (= 2.6.0.rc3)
+  - KalturaPlayerSDK/Core (2.6.0.rc3)
+  - KalturaPlayerSDK/GoogleCast (2.6.0.rc3):
+    - google-cast-sdk (~> 3.2.0)
+  - KalturaPlayerSDK/Widevine (2.6.0.rc3)
 
 DEPENDENCIES:
-  - google-cast-sdk (= 2.10.4)
-  - KalturaPlayerSDK (~> 2.4.1)
+  - google-cast-sdk
+  - KalturaPlayerSDK (from `https://github.com/kaltura/player-sdk-native-ios.git`, tag `v2.6.0.rc3`)
+
+EXTERNAL SOURCES:
+  KalturaPlayerSDK:
+    :git: https://github.com/kaltura/player-sdk-native-ios.git
+    :tag: v2.6.0.rc3
+
+CHECKOUT OPTIONS:
+  KalturaPlayerSDK:
+    :git: https://github.com/kaltura/player-sdk-native-ios.git
+    :tag: v2.6.0.rc3
 
 SPEC CHECKSUMS:
-  google-cast-sdk: eb83ef6b875969e765011c457b254539c0978792
-  KalturaPlayerSDK: f4606564f7e3f40cf364869ceeacdddb1569f2d6
+  google-cast-sdk: f4c2a14214ad486cc26a8f8837e8481c906a0ea8
+  KalturaPlayerSDK: 0e37ca8f8d79dcbb1dd4ff869009944a236ff5dd
 
-PODFILE CHECKSUM: a2a561a448243db19c54009fcb9b9597501eaa87
+PODFILE CHECKSUM: 9d523d233f5cd7b107d0842f147231fdd7501b2e
 
 COCOAPODS: 1.0.1

@@ -8,18 +8,14 @@
 
 #import "KalturaPlayerAdapter.h"
 
-
-//#import "MTChromecastBarButtonItem.h"
-
-
-@interface KalturaPlayerAdapter () <KPViewControllerDelegate, KCastProviderDelegate>
+@interface KalturaPlayerAdapter () <KPViewControllerDelegate>
 
 @property (nonatomic, strong) KPPlayerConfig *playerConfig;
 @property (nonatomic, strong) KPViewController *playerVC;
-@property (nonatomic, strong) KCastProvider *castProvider;
 @property (nonatomic) BOOL isCasting;
 @property (nonatomic) BOOL shouldStartCasting;
 @property (nonatomic, weak, readonly) UIView *renderingView;
+@property (nonatomic, strong, readonly) ChromecastListener *chromecastListener;
 
 @end
 
@@ -31,33 +27,26 @@
 #pragma mark - Lifecycle
 #pragma mark -
 
-- (instancetype)initWithRenderingView:(UIView *)renderingView {
+- (instancetype)initWithRenderingView:(UIView *)renderingView chromecastListener:(ChromecastListener *)chromecastListener {
     self = [super init];
     if (self) {
         _renderingView = renderingView;
-        static NSString * const serverUrlString = @"http://kgit.html5video.org/tags/v2.47.rc15/mwEmbedFrame.php";
-        static NSString * const uiConfigId = @"34339251";
-        static NSString * const partnerId = @"2093031";
-        KPPlayerConfig *config = config = [[KPPlayerConfig alloc] initWithServer:serverUrlString
-                                                                        uiConfID:uiConfigId
-                                                                       partnerId:partnerId];
-
+        _chromecastListener = chromecastListener;
+        static NSString * const serverUrlString = @"http://kgit.html5video.org/tags/v2.48.6/mwEmbedFrame.php";
         [config addConfigKey:@"autoPlay" withValue:@"true"];
         [config addConfigKey:@"fullScreenBtn.visible" withValue:@"false"];
         [config addConfigKey:@"chromecast.plugin" withValue:@"true"];
         [config addConfigKey:@"chromecast.useKalturaPlayer" withValue:@"true"];
-        [config addConfigKey:@"chromecast.applicationID" withValue:@"48A28189"];
+        [config addConfigKey:@"chromecast.applicationID" withValue:@"276999A7"];
+        [config addConfigKey:@"chromecast.receiverLogo" withValue:@"true"];
+        [config addConfigKey:@"chromecast.logoUrl" withValue:@"http://stwww.motortrendondemand.com/wp-content/uploads/2016/08/MTOD_TV_Splash_Image.png"];
+        [config addConfigKey:@"strings.mwe-chromecast-loading" withValue:@"Loading Motor Trend OnDemand"];
         [config addConfigKey:@"controlBarContainer.plugin" withValue:@"true"];
         [config addConfigKey:@"controlBarContainer.hover" withValue:@"true"];
+        [config addConfigKey:@"sourceSelector.displayMode" withValue:@"size"];
+        [config addConfigKey:@"sourceSelector.plugin" withValue:@"true"];
+        [config addConfigKey:@"hlsjs.plugin" withValue:@"false"];
         self.playerConfig = config;
-        
-        self.castProvider = [[KCastProvider alloc] init];
-        self.castProvider.delegate = self;
-        [self.castProvider startScan:@"48A28189"];
-//        [[NSNotificationCenter defaultCenter] addObserver:self
-//                                                 selector:@selector(applicationDidEnterBackgroundNotificationHandler)
-//                                                     name:UIApplicationDidEnterBackgroundNotification
-//                                                   object:nil];
     }
     return self;
 }
@@ -66,12 +55,7 @@
 
 - (void)playVideoWithIdentifier:(NSString *)videoIdentifier {
     if (self.playerVC) {
-//        if (self.isCasting) {
-//            [self.castProvider disconnectFromDevice];
-//            self.shouldStartCasting = YES;
-//        }
         self.playerConfig.entryId = videoIdentifier;
-        [self.playerVC changeConfiguration:self.playerConfig];
         [self.playerVC changeMedia:videoIdentifier];
         return;
     }
@@ -101,11 +85,7 @@
 }
 
 - (void)close {
-    [self stopCasting];
-    self.castProvider.delegate = nil;
-    self.castProvider = nil;
     self.playerVC.castProvider = nil;
-    
     [self closePlayer];
 }
 
@@ -137,12 +117,6 @@
     NSLog(@"%@ >> kPlayer:playerLoadStateDidChange:. Player: %@\nState: %d", [self class], player, (int)state);
     
     if (state & KPMediaLoadStatePlayable) {
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            if (self.shouldStartCasting) {
-//                [self connectToDevice:self.castProvider.selectedDevice];
-//                self.shouldStartCasting = NO;
-//            }
-//        });
     }
 }
 
@@ -151,6 +125,9 @@
     switch (state) {
         case KPMediaPlaybackStatePlaying: {
             [self.delegate playerAdapterDidResume];
+            if (!self.playerVC.castProvider && self.chromecastListener.castProvider) {
+                self.playerVC.castProvider = self.chromecastListener.castProvider;
+            }
             break;
         }
         case KPMediaPlaybackStatePaused: {
@@ -171,51 +148,6 @@
 
 
 
-#pragma mark - KCastProviderDelegate
-
-- (void)castProvider:(KCastProvider *)provider devicesInRange:(BOOL)foundDevices {
-    NSLog(@"%@ >> castProvider:devicesInRange:.", self.class);
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)castProvider:(KCastProvider *)provider didDeviceComeOnline:(KCastDevice *)device {
-    NSLog(@"%@ >> castProvider:didDeviceComeOnline:.", self.class);
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)castProvider:(KCastProvider *)provider didDeviceGoOffline:(KCastDevice *)device {
-    NSLog(@"%@ >> castProvider:didDeviceGoOffline:.", self.class);
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)didConnectToDevice:(KCastProvider *)provider {
-    NSLog(@"%@ >> didConnectToDevice:.", self.class);
-    self.playerVC.castProvider = self.castProvider;
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)didDisconnectFromDevice:(KCastProvider *)provider {
-    NSLog(@"%@ >> didDisconnectFromDevice:.", self.class);
-    [self stopCasting];
-}
-
-- (void)castProvider:(KCastProvider *)provider didFailToConnectToDevice:(NSError *)error {
-    NSLog(@"%@ >> castProvider:didFailToConnectToDevice:.", self.class);
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)castProvider:(KCastProvider *)provider didFailToDisconnectFromDevice:(NSError *)error {
-    NSLog(@"%@ >> castProvider:didFailToDisconnectFromDevice:.", self.class);
-    [self changeChromecastBarButtonState:provider];
-}
-
-- (void)castProvider:(KCastProvider *)provider mediaRemoteControlReady:(id<KCastMediaRemoteControl>)mediaRemoteControl {
-    NSLog(@"%@ >> castProvider:mediaRemoteControlReady:.", self.class);
-    self.isCasting = YES;
-}
-
-
-
 #pragma mark - Private
 
 - (void)logState:(KPMediaPlaybackState)state forPlayer:(KPViewController *)player {
@@ -233,79 +165,5 @@
                  state == KPMediaPlaybackStateSeekingBackward);
 }
 
-
-
-- (void)chromecastBarButtonTouchUpInside:(id)sender {
-    UIAlertController* deviceList = [UIAlertController alertControllerWithTitle:@"Select a device for casting"
-                                                                        message:nil
-                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    NSArray *devices = self.castProvider.devices;
-    if (devices && devices.count > 0) {
-        for (KCastDevice *device in devices) {
-            UIAlertAction *action = [UIAlertAction new];
-            if (self.castProvider.isConnected && [device.routerId isEqualToString:self.castProvider.selectedDevice.routerId]) {
-                action = [UIAlertAction actionWithTitle:[NSString stringWithFormat:@"%@ - Disconnect", device.routerName] style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-                    [self disconnectFromDevice:device];
-                }];
-            }
-            else {
-                action = [UIAlertAction actionWithTitle:device.routerName style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                    [self connectToDevice:device];
-                }];
-            }
-            [deviceList addAction:action];
-        }
-        
-    }
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [deviceList dismissViewControllerAnimated:YES completion:nil];
-    }];
-    [deviceList addAction:cancelAction];
-    
-    [self.delegate displayDeviceListAlertViewController:deviceList];
-}
-
-- (void)disconnectFromDevice:(KCastDevice *)device {
-    [self stopCasting];
-}
-
-- (void)stopCasting {
-    [self.castProvider disconnectFromDeviceWithLeave];
-    self.isCasting = NO;
-    [self changeChromecastBarButtonState:self.castProvider];
-}
-
-- (void)connectToDevice:(KCastDevice *)device {
-    [self stopCasting];
-    [self.castProvider connectToDevice:device];
-}
-
-- (void)changeChromecastBarButtonState:(KCastProvider *)provider {
-    ChromecastBarButtonItem *chromecastButton;
-    if (provider.devices.count > 0) {
-        if (provider.isConnected) {
-            chromecastButton = [self createChromecastBarButtonItemWithState:ChromecastBarButtonItemStateCastConnected];
-        }
-        else {
-            chromecastButton = [self createChromecastBarButtonItemWithState:ChromecastBarButtonItemStateCastAvailable];
-        }
-    }
-    else {
-        chromecastButton = [self createChromecastBarButtonItemWithState:ChromecastBarButtonItemStateCastUnavailable];
-    }
-    [self.delegate updateWithChromecastBarButton:chromecastButton];
-}
-
-
-- (ChromecastBarButtonItem *)createChromecastBarButtonItemWithState:(ChromecastBarButtonItemState)state {
-    ChromecastBarButtonItem *chromecastBarButton = [[ChromecastBarButtonItem alloc] initWithState:state style:UIBarButtonItemStylePlain target:self action:@selector(chromecastBarButtonTouchUpInside:)];
-    chromecastBarButton.imageInsets = UIEdgeInsetsMake(0, 10, 0, -10);
-    return chromecastBarButton;
-}
-
-//- (void)applicationDidEnterBackgroundNotificationHandler {
-//    [self stopCasting];
-//}
 
 @end

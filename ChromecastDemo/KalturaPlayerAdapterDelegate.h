@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ChromecastBarButtonItem.h"
 
 @protocol KalturaPlayerAdapterDelegate <NSObject>
 
@@ -16,7 +15,6 @@
 - (void)playerAdapterDidPlayToEnd;
 - (void)playerAdapterDidPause;
 - (void)playerAdapterDidResume;
-- (void)updateWithChromecastBarButton:(ChromecastBarButtonItem *)chromecastBarButton;
 - (void)displayDeviceListAlertViewController:(UIAlertController *)deviceList;
 
 @end

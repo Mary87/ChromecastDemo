@@ -6,14 +6,17 @@
 //  Copyright © 2016 3ss. All rights reserved.
 //
 
+#import <GoogleCast/GoogleCast.h>
 #import "ViewController.h"
 #import "KalturaPlayerAdapter.h"
+#import "ChromecastListener.h"
 
-@interface ViewController () <KalturaPlayerAdapterDelegate>
+@interface ViewController () <KalturaPlayerAdapterDelegate, ChromecastListenerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *playerPlaceholderView;
 @property (weak, nonatomic) IBOutlet UINavigationBar *navigationBar;
 @property (nonatomic, strong) KalturaPlayerAdapter *playerAdapter;
+@property (nonatomic, strong) ChromecastListener *chromecastListener;
 
 @end
 
@@ -21,9 +24,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    _playerAdapter = [[KalturaPlayerAdapter alloc] initWithRenderingView:self.playerPlaceholderView];
-    self.playerAdapter.delegate = self;
+    _chromecastListener = [[ChromecastListener alloc] init];
+    _chromecastListener.delegate = self;
+    UIBarButtonItem *chromecastBarButtonItem = [self createChromecastNavigationBarButton];
+    UINavigationItem *navItem = self.navigationBar.items.firstObject;
+    [navItem setRightBarButtonItem:chromecastBarButtonItem];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -40,6 +46,10 @@
 }
 
 - (void)playVideoWithIdentifier:(NSString *)vidoeIdentifier {
+    if (!self.playerAdapter) {
+        self.playerAdapter = [[KalturaPlayerAdapter alloc] initWithRenderingView:self.playerPlaceholderView chromecastListener:self.chromecastListener];
+        self.playerAdapter.delegate = self;
+    }
     [self.playerAdapter playVideoWithIdentifier:vidoeIdentifier];
 }
 
@@ -49,16 +59,10 @@
 
 
 
+
+
+#pragma mark - Protocols
 #pragma mark - KalturaPlayerAdapterDelegate
-#pragma mark -
-
-- (void)updateWithChromecastBarButton:(ChromecastBarButtonItem *)chromecastBarButton {
-    chromecastBarButton.imageInsets = UIEdgeInsetsMake(0, 10, 0, -10);
-    UINavigationItem *navItem = self.navigationBar.items.firstObject;
-    [navItem setRightBarButtonItem:chromecastBarButton];
-    [navItem setTitle:@"Chromecast Demo App"];
-}
-
 
 - (void)displayDeviceListAlertViewController:(UIAlertController *)deviceList {
     [self presentViewController:deviceList animated:YES completion:nil];
@@ -74,6 +78,40 @@
 
 - (void)playerAdapterDidResume {
     
+}
+
+
+
+#pragma mark - ChromecastListenerDelegate
+
+
+
+
+#pragma mark - Private
+#pragma mark -
+
+- (UIBarButtonItem *)createChromecastNavigationBarButton {
+    GCKUICastButton *castButton = [[GCKUICastButton alloc] initWithFrame:CGRectMake(0, 0, 24, 24)];
+    castButton.tintColor = [UIColor whiteColor];
+    UIImage *activeIcon = [[UIImage imageNamed:@"cast-connected-button"]
+                           imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImage *inactiveIcon = [[UIImage imageNamed:@"cast-available-button"]
+                             imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    NSArray *animationIcons = @[[[UIImage imageNamed:@"cast-connecting-1-button"]
+                                 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal],
+                                [[UIImage imageNamed:@"cast-connecting-2-button"]
+                                 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal],
+                                [[UIImage imageNamed:@"cast-connecting-3-button"]
+                                 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+    [castButton setInactiveIcon:inactiveIcon activeIcon:activeIcon animationIcons:animationIcons];
+    castButton.triggersDefaultCastDialog = NO;
+    [castButton addTarget:self action:@selector(openCastDialog) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *chromecastBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:castButton];
+    return chromecastBarButtonItem;
+}
+
+- (void)openCastDialog {
+    [[GCKCastContext sharedInstance] presentCastDialog];
 }
 
 @end
