@@ -17,7 +17,7 @@
 		5870B3A41D6F4E9A00A0FD3B /* ChromecastDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5870B3A31D6F4E9A00A0FD3B /* ChromecastDemoTests.m */; };
 		5870B3AF1D6F4E9A00A0FD3B /* ChromecastDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5870B3AE1D6F4E9A00A0FD3B /* ChromecastDemoUITests.m */; };
 		5870B3BE1D6F502100A0FD3B /* KalturaPlayerAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5870B3BD1D6F502100A0FD3B /* KalturaPlayerAdapter.m */; };
-		5870B3C51D6F5C2D00A0FD3B /* ChromecastBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5870B3C41D6F5C2D00A0FD3B /* ChromecastBarButtonItem.m */; };
+		58C3035B1DCB5203009A1027 /* ChromecastListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 58C3035A1DCB5203009A1027 /* ChromecastListener.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,8 +58,8 @@
 		5870B3BC1D6F502100A0FD3B /* KalturaPlayerAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KalturaPlayerAdapter.h; sourceTree = "<group>"; };
 		5870B3BD1D6F502100A0FD3B /* KalturaPlayerAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KalturaPlayerAdapter.m; sourceTree = "<group>"; };
 		5870B3C21D6F549700A0FD3B /* KalturaPlayerAdapterDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KalturaPlayerAdapterDelegate.h; sourceTree = "<group>"; };
-		5870B3C31D6F5C2D00A0FD3B /* ChromecastBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChromecastBarButtonItem.h; sourceTree = "<group>"; };
-		5870B3C41D6F5C2D00A0FD3B /* ChromecastBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChromecastBarButtonItem.m; sourceTree = "<group>"; };
+		58C303591DCB5203009A1027 /* ChromecastListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChromecastListener.h; sourceTree = "<group>"; };
+		58C3035A1DCB5203009A1027 /* ChromecastListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChromecastListener.m; sourceTree = "<group>"; };
 		8CC32A22EB54C75AB8EBBFC6 /* Pods-ChromecastDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChromecastDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ChromecastDemo/Pods-ChromecastDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		C4EEED8C9A055C232F9C6D7E /* libPods-ChromecastDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ChromecastDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -136,8 +136,8 @@
 				5870B3BC1D6F502100A0FD3B /* KalturaPlayerAdapter.h */,
 				5870B3BD1D6F502100A0FD3B /* KalturaPlayerAdapter.m */,
 				5870B3C21D6F549700A0FD3B /* KalturaPlayerAdapterDelegate.h */,
-				5870B3C31D6F5C2D00A0FD3B /* ChromecastBarButtonItem.h */,
-				5870B3C41D6F5C2D00A0FD3B /* ChromecastBarButtonItem.m */,
+				58C303591DCB5203009A1027 /* ChromecastListener.h */,
+				58C3035A1DCB5203009A1027 /* ChromecastListener.m */,
 			);
 			path = ChromecastDemo;
 			sourceTree = "<group>";
@@ -241,11 +241,12 @@
 		5870B37E1D6F4E9A00A0FD3B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = 3ss;
 				TargetAttributes = {
 					5870B3851D6F4E9A00A0FD3B = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = AS64JEU65W;
 					};
 					5870B39E1D6F4E9A00A0FD3B = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -358,7 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5870B3911D6F4E9A00A0FD3B /* ViewController.m in Sources */,
-				5870B3C51D6F5C2D00A0FD3B /* ChromecastBarButtonItem.m in Sources */,
+				58C3035B1DCB5203009A1027 /* ChromecastListener.m in Sources */,
 				5870B38E1D6F4E9A00A0FD3B /* AppDelegate.m in Sources */,
 				5870B38B1D6F4E9A00A0FD3B /* main.m in Sources */,
 				5870B3BE1D6F502100A0FD3B /* KalturaPlayerAdapter.m in Sources */,
@@ -430,8 +431,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -475,8 +478,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -505,6 +510,8 @@
 			baseConfigurationReference = 8CC32A22EB54C75AB8EBBFC6 /* Pods-ChromecastDemo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = AS64JEU65W;
 				INFOPLIST_FILE = ChromecastDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tv.3ss.ChromecastDemo;
@@ -517,6 +524,7 @@
 			baseConfigurationReference = 2BF88C2AFB82B81701D7C615 /* Pods-ChromecastDemo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = AS64JEU65W;
 				INFOPLIST_FILE = ChromecastDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tv.3ss.ChromecastDemo;

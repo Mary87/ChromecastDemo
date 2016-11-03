@@ -1,6 +1,6 @@
 target 'ChromecastDemo' do
-  pod 'KalturaPlayerSDK', '~> 2.4.2’
-  pod 'google-cast-sdk', '2.10.4'
+    pod 'KalturaPlayerSDK', :git => 'https://github.com/kaltura/player-sdk-native-ios.git', :tag => 'v2.6.0.rc3'
+    pod 'google-cast-sdk'
 end
 
 post_install do |installer|
