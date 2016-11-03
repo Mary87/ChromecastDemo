@@ -33,6 +33,11 @@
         _renderingView = renderingView;
         _chromecastListener = chromecastListener;
         static NSString * const serverUrlString = @"http://kgit.html5video.org/tags/v2.48.6/mwEmbedFrame.php";
+        static NSString * const uiConfigId = @"34339251";
+        static NSString * const partnerId = @"2093031";
+        KPPlayerConfig *config = config = [[KPPlayerConfig alloc] initWithServer:serverUrlString
+                                                                        uiConfID:uiConfigId
+                                                                       partnerId:partnerId];
         [config addConfigKey:@"autoPlay" withValue:@"true"];
         [config addConfigKey:@"fullScreenBtn.visible" withValue:@"false"];
         [config addConfigKey:@"chromecast.plugin" withValue:@"true"];
